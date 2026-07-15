@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory System - Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <!-- SEO Meta Tags -->
+<meta name="description" content="Modern Inventory Management System - Track products, purchases, suppliers, and generate reports">
+<meta name="keywords" content="inventory, stock, management, business, warehouse, POS">
+<meta name="author" content="AI Tool Cor">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://inventory.aitoolcor.com/">
+<meta property="og:title" content="Inventory System - AI Tool Cor">
+<meta property="og:description" content="Modern Inventory Management System">
+<meta property="og:image" content="https://inventory.aitoolcor.com/assets/images/og-image.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://inventory.aitoolcor.com/">
+<meta property="twitter:title" content="Inventory System">
+<meta property="twitter:description" content="Modern Inventory Management System">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#a78bfa">
+
+<!-- iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Inventory">
+
+    <style>
+        /* ── Reset ── */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #e0c3fc 0%, #fbc2eb 30%, #a6c1ee 70%, #c2e9fb 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        /* ── Animated Background ── */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .bg-shapes .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: floatShape 20s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: #a78bfa;
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape:nth-child(2) {
+            width: 200px;
+            height: 200px;
+            background: #f9a8d4;
+            top: 50%;
+            right: -50px;
+            animation-delay: -5s;
+        }
+
+        .shape:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            background: #93c5fd;
+            bottom: -80px;
+            left: 30%;
+            animation-delay: -10s;
+        }
+
+        .shape:nth-child(4) {
+            width: 180px;
+            height: 180px;
+            background: #fdba74;
+            top: 20%;
+            right: 25%;
+            animation-delay: -15s;
+        }
+
+        .shape:nth-child(5) {
+            width: 150px;
+            height: 150px;
+            background: #86efac;
+            bottom: 20%;
+            left: 10%;
+            animation-delay: -8s;
+        }
+
+        @keyframes floatShape {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) scale(1); }
+            25% { transform: translate(30px, -30px) rotate(90deg) scale(1.1); }
+            50% { transform: translate(-20px, 20px) rotate(180deg) scale(0.9); }
+            75% { transform: translate(20px, 30px) rotate(270deg) scale(1.05); }
+        }
+
+        /* ── Login Container ── */
+        .login-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: 0 20px 60px rgba(31, 38, 135, 0.15);
+            overflow: hidden;
+            animation: slideUp 0.6s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* ── Left Panel (Branding) ── */
+        .login-branding {
+            flex: 1;
+            background: linear-gradient(135deg, rgba(167, 139, 250, 0.4), rgba(249, 168, 212, 0.3));
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-branding::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: rotateBg 30s infinite linear;
+        }
+
+        @keyframes rotateBg {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .branding-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 25px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .branding-icon i {
+            font-size: 45px;
+            background: linear-gradient(135deg, #a78bfa, #f9a8d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .branding-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2d2d3f;
+            margin-bottom: 8px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .branding-subtitle {
+            font-size: 14px;
+            color: #4a4a6a;
+            max-width: 250px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+
+        .branding-features {
+            margin-top: 30px;
+            text-align: left;
+            position: relative;
+            z-index: 1;
+        }
+
+        .branding-features .feature {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 0;
+            font-size: 13px;
+            color: #4a4a6a;
+        }
+
+        .branding-features .feature i {
+            color: #a78bfa;
+            width: 20px;
+            text-align: center;
+        }
+
+        /* ── Right Panel (Form) ── */
+        .login-form-section {
+            flex: 1;
+            padding: 50px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-header {
+            margin-bottom: 35px;
+        }
+
+        .login-header h1 {
+            font-size: 26px;
+            font-weight: 700;
+            color: #2d2d3f;
+            margin-bottom: 8px;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            color: #7a7a9a;
+        }
+
+        /* ── Indian Time Display ── */
+        .time-display {
+            background: rgba(255, 255, 255, 0.4);
+            border-radius: 15px;
+            padding: 15px 20px;
+            margin-bottom: 25px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .time-display .indian-time {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2d2d3f;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .time-display .indian-date {
+            font-size: 12px;
+            color: #7a7a9a;
+            margin-top: 3px;
+        }
+
+        .time-display .timezone-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            background: linear-gradient(135deg, #a78bfa, #f9a8d4);
+            color: white;
+            font-size: 10px;
+            font-weight: 600;
+            border-radius: 20px;
+            margin-top: 5px;
+        }
+
+        /* ── Form Styles ── */
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 12px;
+            font-weight: 600;
+            color: #4a4a6a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9999b3;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 15px 14px 45px;
+            border: 2px solid rgba(167, 139, 250, 0.15);
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.5);
+            font-family: 'Poppins', sans-serif;
+            font-size: 14px;
+            color: #2d2d3f;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .input-wrapper input:focus {
+            border-color: #a78bfa;
+            background: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 0 4px rgba(167, 139, 250, 0.1);
+        }
+
+        .input-wrapper input:focus + i,
+        .input-wrapper input:focus ~ i {
+            color: #a78bfa;
+        }
+
+        .input-wrapper .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: #9999b3;
+            cursor: pointer;
+            font-size: 16px;
+            padding: 5px;
+        }
+
+        .input-wrapper .toggle-password:hover {
+            color: #a78bfa;
+        }
+
+        /* ── Remember & Forgot ── */
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .remember-me {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            color: #4a4a6a;
+        }
+
+        .remember-me input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            accent-color: #a78bfa;
+            cursor: pointer;
+        }
+
+        .forgot-link {
+            font-size: 13px;
+            color: #a78bfa;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .forgot-link:hover {
+            color: #8b5cf6;
+        }
+
+        /* ── Login Button ── */
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #a78bfa, #8b5cf6);
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(167, 139, 250, 0.4);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .login-btn.loading {
+            pointer-events: none;
+            opacity: 0.8;
+        }
+
+        .login-btn .spinner {
+            display: none;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        .login-btn.loading .spinner {
+            display: block;
+        }
+
+        .login-btn.loading .btn-text {
+            display: none;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* ── Error Message ── */
+        .error-message {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+            animation: shakeError 0.5s ease;
+        }
+
+        .error-message.show {
+            display: flex;
+        }
+
+        @keyframes shakeError {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        /* ── Default Credentials ── */
+        .default-creds {
+            margin-top: 25px;
+            padding: 15px;
+            background: rgba(167, 139, 250, 0.08);
+            border-radius: 12px;
+            border: 1px solid rgba(167, 139, 250, 0.12);
+        }
+
+        .default-creds h4 {
+            font-size: 11px;
+            font-weight: 600;
+            color: #7a7a9a;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .cred-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 0;
+            font-size: 13px;
+            color: #4a4a6a;
+        }
+
+        .cred-item span {
+            font-weight: 600;
+            color: #a78bfa;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .cred-item span:hover {
+            color: #8b5cf6;
+        }
+
+        /* ── Session Info ── */
+        .session-info {
+            margin-top: 15px;
+            padding: 10px 15px;
+            background: rgba(34, 197, 94, 0.08);
+            border-radius: 10px;
+            border: 1px solid rgba(34, 197, 94, 0.15);
+            font-size: 12px;
+            color: #4a4a6a;
+            display: none;
+        }
+
+        .session-info i {
+            color: #22c55e;
+            margin-right: 5px;
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                max-width: 420px;
+                border-radius: 25px;
+            }
+
+            .login-branding {
+                padding: 30px 25px;
+            }
+
+            .branding-features {
+                display: none;
+            }
+
+            .branding-title {
+                font-size: 22px;
+            }
+
+            .branding-icon {
+                width: 70px;
+                height: 70px;
+            }
+
+            .branding-icon i {
+                font-size: 32px;
+            }
+
+            .login-form-section {
+                padding: 30px 25px;
+            }
+
+            .login-header h1 {
+                font-size: 22px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 10px;
+            }
+
+            .login-container {
+                border-radius: 20px;
+            }
+
+            .login-branding {
+                padding: 25px 20px;
+            }
+
+            .login-form-section {
+                padding: 25px 20px;
+            }
+
+            .time-display .indian-time {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- Login Container -->
+    <div class="login-container">
+        <!-- Left Branding Panel -->
+        <div class="login-branding">
+            <div class="branding-icon">
+                <i class="fas fa-boxes-stacked"></i>
+            </div>
+            <h2 class="branding-title">Inventory System</h2>
+            <p class="branding-subtitle">Manage your inventory efficiently with our modern system</p>
+
+            <div class="branding-features">
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Real-time Stock Tracking</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Purchase & Payment Management</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Supplier Management</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Reports & Analytics</span>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-check-circle"></i>
+                    <span>Daily Activity Logs (IST)</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Form Panel -->
+        <div class="login-form-section">
+            <div class="login-header">
+                <h1>Welcome Back! 👋</h1>
+                <p>Sign in to your account</p>
+            </div>
+
+            <!-- Indian Time Display -->
+            <div class="time-display">
+                <div class="indian-time" id="indianTime">--:--:-- --</div>
+                <div class="indian-date" id="indianDate">Loading...</div>
+                <span class="timezone-badge">🇮🇳 IST (UTC+5:30)</span>
+            </div>
+
+            <!-- Error Message -->
+            <div class="error-message" id="errorMessage">
+                <i class="fas fa-exclamation-circle"></i>
+                <span id="errorText">Invalid credentials</span>
+            </div>
+
+            <!-- Login Form -->
+            <form id="loginForm" onsubmit="return false;">
+                <div class="form-group">
+                    <label>Username</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="username" placeholder="Enter username" autocomplete="username" required>
+                        <i class="fas fa-user"></i>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <input type="password" id="password" placeholder="Enter password" autocomplete="current-password" required>
+                        <i class="fas fa-lock"></i>
+                        <button type="button" class="toggle-password" id="togglePassword">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-options">
+                    <label class="remember-me">
+                        <input type="checkbox" id="rememberMe">
+                        <span>Remember me</span>
+                    </label>
+                    <a href="#" class="forgot-link" onclick="showForgot()">Forgot password?</a>
+                </div>
+
+                <button type="submit" class="login-btn" id="loginBtn">
+                    <span class="btn-text"><i class="fas fa-sign-in-alt"></i> Sign In</span>
+                    <div class="spinner"></div>
+                </button>
+            </form>
+
+            <!-- Default Credentials
+            <div class="default-creds">
+                <h4>Demo Credentials</h4>
+                <div class="cred-item">
+                    👤 Username: <span onclick="fillCredentials('admin', 'admin123')">admin</span>
+                </div>
+                <div class="cred-item">
+                    🔑 Password: <span onclick="fillCredentials('admin', 'admin123')">admin123</span>
+                </div>
+            </div> -->
+
+            <!-- Session Info -->
+            <div class="session-info" id="sessionInfo">
+                <i class="fas fa-info-circle"></i>
+                <span id="sessionText"></span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /* ============================================
+           LOGIN PAGE SCRIPT
+           ============================================ */
+
+        // ── Default Users ──
+        const DEFAULT_USERS = [
+            {
+                username: 'admin',
+                password: 'admin123',
+                name: 'Admin',
+                role: 'Administrator',
+                avatar: '👤'
+            },
+            {
+                username: 'manager',
+                password: 'manager123',
+                name: 'Manager',
+                role: 'Manager',
+                avatar: '👨‍💼'
+            },
+            {
+                username: 'staff',
+                password: 'staff123',
+                name: 'Staff',
+                role: 'Staff',
+                avatar: '👷'
+            }
+        ];
+
+        // Initialize users in storage if not exists
+        if (!localStorage.getItem('inv_users')) {
+            localStorage.setItem('inv_users', JSON.stringify(DEFAULT_USERS));
+        }
+
+        // ── Indian Time (IST) ──
+        function updateIndianTime() {
+            const options = {
+                timeZone: 'Asia/Kolkata',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+
+            const dateOptions = {
+                timeZone: 'Asia/Kolkata',
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            };
+
+            const now = new Date();
+            const timeStr = now.toLocaleTimeString('en-IN', options);
+            const dateStr = now.toLocaleDateString('en-IN', dateOptions);
+
+            document.getElementById('indianTime').textContent = timeStr.toUpperCase();
+            document.getElementById('indianDate').textContent = dateStr;
+        }
+
+        updateIndianTime();
+        setInterval(updateIndianTime, 1000);
+
+        // ── Toggle Password ──
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const icon = this.querySelector('i');
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.replace('fa-eye', 'fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.replace('fa-eye-slash', 'fa-eye');
+            }
+        });
+
+        // ── Fill Credentials ──
+        function fillCredentials(username, password) {
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            hideError();
+        }
+
+        // ── Show/Hide Error ──
+        function showError(message) {
+            const errorEl = document.getElementById('errorMessage');
+            document.getElementById('errorText').textContent = message;
+            errorEl.classList.add('show');
+        }
+
+        function hideError() {
+            document.getElementById('errorMessage').classList.remove('show');
+        }
+
+        // ── Login Form Submit ──
+        document.getElementById('loginForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            handleLogin();
+        });
+
+        function handleLogin() {
+            const username = document.getElementById('username').value.trim().toLowerCase();
+            const password = document.getElementById('password').value;
+            const rememberMe = document.getElementById('rememberMe').checked;
+            const loginBtn = document.getElementById('loginBtn');
+
+            hideError();
+
+            if (!username || !password) {
+                showError('Please enter both username and password');
+                return;
+            }
+
+            // Show loading
+            loginBtn.classList.add('loading');
+
+            // Simulate network delay
+            setTimeout(() => {
+                const users = JSON.parse(localStorage.getItem('inv_users') || '[]');
+                const user = users.find(u =>
+                    u.username.toLowerCase() === username && u.password === password
+                );
+
+                if (user) {
+                    // Login success
+                    const session = {
+                        userId: user.username,
+                        name: user.name,
+                        role: user.role,
+                        avatar: user.avatar,
+                        loginTime: getIndianTime(),
+                        loginDate: getIndianDate(),
+                        loginTimestamp: new Date().toISOString(),
+                        isLoggedIn: true
+                    };
+
+                    // Save session
+                    if (rememberMe) {
+                        localStorage.setItem('inv_session', JSON.stringify(session));
+                    } else {
+                        sessionStorage.setItem('inv_session', JSON.stringify(session));
+                    }
+
+                    // Log activity
+                    logActivity('login', `${user.name} logged in`, user.username);
+
+                    // Redirect
+                    window.location.href = 'index.html';
+                } else {
+                    showError('Invalid username or password');
+                    loginBtn.classList.remove('loading');
+
+                    // Log failed attempt
+                    logActivity('login_failed', `Failed login attempt for "${username}"`, username);
+                }
+            }, 1000);
+        }
+
+        // ── Get Indian Time ──
+        function getIndianTime() {
+            return new Date().toLocaleTimeString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            });
+        }
+
+        function getIndianDate() {
+            return new Date().toLocaleDateString('en-IN', {
+                timeZone: 'Asia/Kolkata',
+                year: 'numeric',
+                month: '2-digit',
+                day: '2-digit'
+            });
+        }
+
+        function getIndianISODate() {
+            const now = new Date();
+            const istOffset = 5.5 * 60 * 60 * 1000;
+            const istDate = new Date(now.getTime() + istOffset - (now.getTimezoneOffset() * 60 * 1000));
+            return istDate.toISOString().split('T')[0];
+        }
+
+        // ── Activity Log ──
+        function logActivity(type, message, userId) {
+            const logs = JSON.parse(localStorage.getItem('inv_activity_log') || '[]');
+            logs.push({
+                id: Date.now(),
+                type: type,
+                message: message,
+                userId: userId,
+                time: getIndianTime(),
+                date: getIndianDate(),
+                isoDate: getIndianISODate(),
+                timestamp: new Date().toISOString()
+            });
+
+            // Keep only last 500 entries
+            if (logs.length > 500) {
+                logs.splice(0, logs.length - 500);
+            }
+
+            localStorage.setItem('inv_activity_log', JSON.stringify(logs));
+        }
+
+        // ── Forgot Password ──
+        function showForgot() {
+            alert('📧 Contact your administrator to reset password.\n\nDefault Credentials:\n👤 admin / admin123\n👨‍💼 manager / manager123\n👷 staff / staff123');
+        }
+
+        // ── Check if already logged in ──
+        function checkExistingSession() {
+            const session = JSON.parse(localStorage.getItem('inv_session') || sessionStorage.getItem('inv_session') || 'null');
+
+            if (session && session.isLoggedIn) {
+                const sessionInfo = document.getElementById('sessionInfo');
+                const sessionText = document.getElementById('sessionText');
+                sessionInfo.style.display = 'block';
+                sessionText.textContent = `Last login: ${session.name} on ${session.loginDate} at ${session.loginTime}`;
+
+                // Auto redirect after 2 seconds
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            }
+        }
+
+        checkExistingSession();
+
+        // ── Enter key support ──
+        document.getElementById('password').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                handleLogin();
+            }
+        });
+
+        document.getElementById('username').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                document.getElementById('password').focus();
+            }
+        });
+
+        // ── Focus first input ──
+        document.getElementById('username').focus();
+    </script>
+</body>
+</html>

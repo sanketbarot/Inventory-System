@@ -1,0 +1,18 @@
+# ============================================
+# Robots.txt - Inventory System
+# ============================================
+
+User-agent: *
+Allow: /
+Allow: /login.html
+Disallow: /js/
+Disallow: /css/
+Disallow: /assets/
+Disallow: /*.json$
+Disallow: /*.md$
+
+# Sitemap Location
+Sitemap: https://inventory.aitoolcor.com/sitemap.xml
+
+# Crawl Delay
+Crawl-delay: 10

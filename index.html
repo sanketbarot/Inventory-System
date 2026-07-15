@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory System - Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- SEO Meta Tags -->
+<meta name="description" content="Modern Inventory Management System - Track products, purchases, suppliers, and generate reports">
+<meta name="keywords" content="inventory, stock, management, business, warehouse, POS">
+<meta name="author" content="AI Tool Cor">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://inventory.aitoolcor.com/">
+<meta property="og:title" content="Inventory System - AI Tool Cor">
+<meta property="og:description" content="Modern Inventory Management System">
+<meta property="og:image" content="https://inventory.aitoolcor.com/assets/images/og-image.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://inventory.aitoolcor.com/">
+<meta property="twitter:title" content="Inventory System">
+<meta property="twitter:description" content="Modern Inventory Management System">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#a78bfa">
+
+<!-- iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Inventory">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-boxes-stacked"></i>
+                    <div class="logo-text">
+                        <span class="logo-title">INVENTORY</span>
+                        <span class="logo-subtitle">SYSTEM</span>
+                    </div>
+                </div>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="index.html"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a></li>
+                    <li><a href="inventory.html"><i class="fas fa-box"></i><span>Inventory</span></a></li>
+                    <li><a href="purchase.html"><i class="fas fa-cart-plus"></i><span>Purchase</span></a></li>
+                    <li><a href="stockout.html"><i class="fas fa-dolly"></i><span>Stock Out</span></a></li>
+                    <li><a href="suppliers.html"><i class="fas fa-truck"></i><span>Suppliers</span></a></li>
+                    <li><a href="reports.html"><i class="fas fa-file-lines"></i><span>Reports</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer"><div class="version">v2.0.0</div></div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <div class="search-box">
+                        <i class="fas fa-search"></i>
+                        <input type="text" placeholder="Search..." id="globalSearch">
+                    </div>
+                </div>
+                <div class="header-right">
+                    <div class="notification" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notifBadge">0</span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="avatar"><i class="fas fa-user"></i></div>
+                        <span class="user-name">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <!-- Welcome + Date Filter -->
+                <div class="dashboard-header">
+                    <div class="welcome-section">
+                        <h1>Welcome Admin! 👋</h1>
+                        <p>Here's what's happening with your inventory today.</p>
+                    </div>
+
+                    <!-- Date Range Filter -->
+                    <div class="date-filter-widget glass-card">
+                        <div class="filter-header">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>Filter Period</span>
+                        </div>
+                        <div class="date-filter-buttons">
+                            <button class="date-btn active" data-range="today">Today</button>
+                            <button class="date-btn" data-range="yesterday">Yesterday</button>
+                            <button class="date-btn" data-range="week">This Week</button>
+                            <button class="date-btn" data-range="month">This Month</button>
+                            <button class="date-btn" data-range="year">This Year</button>
+                            <button class="date-btn" data-range="custom">
+                                <i class="fas fa-calendar"></i> Custom
+                            </button>
+                        </div>
+                        <div class="custom-date-range" id="customDateRange" style="display:none;">
+                            <input type="date" id="customFromDate" class="filter-date">
+                            <span>to</span>
+                            <input type="date" id="customToDate" class="filter-date">
+                            <button class="btn btn-small btn-purple" id="applyCustomDate">Apply</button>
+                        </div>
+                        <div class="active-period" id="activePeriod">
+                            📅 <strong>Today</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Stats Cards with Growth Indicators -->
+                <div class="stats-grid">
+                    <div class="stat-card stat-products">
+                        <div class="stat-icon"><i class="fas fa-box"></i></div>
+                        <div class="stat-info">
+                            <h3 class="counter" data-target="0" id="totalProducts">0</h3>
+                            <p>Total Products</p>
+                            <div class="growth-indicator" id="productsGrowth">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-value">
+                        <div class="stat-icon"><i class="fas fa-coins"></i></div>
+                        <div class="stat-info">
+                            <h3 class="counter-currency" data-target="0" id="inventoryValue">₹0</h3>
+                            <p>Inventory Value</p>
+                            <div class="growth-indicator" id="valueGrowth">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-low">
+                        <div class="stat-icon"><i class="fas fa-exclamation-triangle"></i></div>
+                        <div class="stat-info">
+                            <h3 class="counter" data-target="0" id="lowStockCount">0</h3>
+                            <p>Low Stock Items</p>
+                            <div class="growth-indicator warning" id="lowStockGrowth">
+                                <i class="fas fa-minus"></i>
+                                <span>Alert</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-out">
+                        <div class="stat-icon"><i class="fas fa-times-circle"></i></div>
+                        <div class="stat-info">
+                            <h3 class="counter" data-target="0" id="outOfStockCount">0</h3>
+                            <p>Out of Stock</p>
+                            <div class="growth-indicator danger" id="outStockGrowth">
+                                <i class="fas fa-minus"></i>
+                                <span>Critical</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-pending">
+                        <div class="stat-icon"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info">
+                            <h3 class="counter-currency" data-target="0" id="pendingPayments">₹0</h3>
+                            <p>Pending Payments</p>
+                            <div class="growth-indicator" id="pendingGrowth">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>0%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stat-card stat-overdue">
+                        <div class="stat-icon"><i class="fas fa-calendar-xmark"></i></div>
+                        <div class="stat-info">
+                            <h3 class="counter-currency" data-target="0" id="overduePayments">₹0</h3>
+                            <p>Overdue Payments</p>
+                            <div class="growth-indicator danger" id="overdueGrowth">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>Alert</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Summary & Quick Actions -->
+                <div class="row-grid">
+                    <div class="glass-card stock-summary">
+                        <h2><i class="fas fa-chart-line"></i> Stock Movement Trend</h2>
+                        <div class="summary-items">
+                            <div class="summary-item">
+                                <span class="summary-label">Total Stock</span>
+                                <span class="summary-value" id="currentStock">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Stock In</span>
+                                <span class="summary-value text-success" id="todayPurchase">0</span>
+                            </div>
+                            <div class="summary-item">
+                                <span class="summary-label">Stock Out</span>
+                                <span class="summary-value text-danger" id="todayStockOut">0</span>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="stockChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-card quick-actions">
+                        <h2><i class="fas fa-bolt"></i> Quick Actions</h2>
+                        <div class="action-buttons">
+                            <a href="inventory.html?action=add" class="action-btn btn-purple">
+                                <i class="fas fa-plus"></i>
+                                <span>Add Product</span>
+                            </a>
+                            <a href="purchase.html?action=add" class="action-btn btn-pink">
+                                <i class="fas fa-cart-plus"></i>
+                                <span>New Purchase</span>
+                            </a>
+                            <a href="stockout.html?action=add" class="action-btn btn-blue">
+                                <i class="fas fa-dolly"></i>
+                                <span>Stock Out</span>
+                            </a>
+                            <a href="suppliers.html?action=add" class="action-btn btn-orange">
+                                <i class="fas fa-truck"></i>
+                                <span>Add Supplier</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Charts Row - Category & Top Products -->
+                <div class="row-grid">
+                    <div class="glass-card">
+                        <h2><i class="fas fa-chart-pie"></i> Category Distribution</h2>
+                        <div class="chart-container-medium">
+                            <canvas id="categoryChart"></canvas>
+                        </div>
+                        <div class="chart-legend" id="categoryLegend"></div>
+                    </div>
+
+                    <div class="glass-card">
+                        <h2><i class="fas fa-trophy"></i> Top 5 Products by Value</h2>
+                        <div class="chart-container-medium">
+                            <canvas id="topProductsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: Purchase Trend Chart (Full Width) -->
+                <div class="glass-card">
+                    <h2><i class="fas fa-chart-area"></i> Purchase Trends (Last 30 Days)</h2>
+                    <div class="chart-container-large">
+                        <canvas id="purchaseTrendChart"></canvas>
+                    </div>
+                </div>
+
+                <!-- Recent Purchases & Pending Payments -->
+                <div class="row-grid">
+                    <div class="glass-card">
+                        <h2><i class="fas fa-history"></i> Recent Purchases</h2>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Supplier</th>
+                                        <th>Invoice</th>
+                                        <th>Amount</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentPurchasesTable">
+                                    <tr><td colspan="5" class="empty-state">No purchases yet</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="glass-card">
+                        <h2><i class="fas fa-credit-card"></i> Pending Payments</h2>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Supplier</th>
+                                        <th>Amount</th>
+                                        <th>Due Date</th>
+                                        <th>Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pendingPaymentsTable">
+                                    <tr><td colspan="4" class="empty-state">No pending payments</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Low Stock Alert -->
+                <div class="glass-card">
+                    <h2><i class="fas fa-exclamation-circle"></i> Low Stock Alert</h2>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Product</th>
+                                    <th>Current Stock</th>
+                                    <th>Minimum Stock</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="lowStockTable">
+                                <tr><td colspan="4" class="empty-state">All items are well stocked</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notif-header">
+            <h3>Notifications</h3>
+            <button class="notif-close" id="notifClose"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="notif-body" id="notifBody">
+            <p class="empty-notif">No notifications</p>
+        </div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/dashboard.js"></script>
+</body>
+</html>

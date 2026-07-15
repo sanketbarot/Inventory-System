@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory System - Reports</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- SEO Meta Tags -->
+<meta name="description" content="Modern Inventory Management System - Track products, purchases, suppliers, and generate reports">
+<meta name="keywords" content="inventory, stock, management, business, warehouse, POS">
+<meta name="author" content="AI Tool Cor">
+<meta name="robots" content="index, follow">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://inventory.aitoolcor.com/">
+<meta property="og:title" content="Inventory System - AI Tool Cor">
+<meta property="og:description" content="Modern Inventory Management System">
+<meta property="og:image" content="https://inventory.aitoolcor.com/assets/images/og-image.png">
+
+<!-- Twitter -->
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:url" content="https://inventory.aitoolcor.com/">
+<meta property="twitter:title" content="Inventory System">
+<meta property="twitter:description" content="Modern Inventory Management System">
+
+<!-- Favicon -->
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon-32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon-16.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/apple-touch-icon.png">
+
+<!-- PWA Manifest -->
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#a78bfa">
+
+<!-- iOS PWA -->
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Inventory">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-boxes-stacked"></i>
+                    <div class="logo-text">
+                        <span class="logo-title">INVENTORY</span>
+                        <span class="logo-subtitle">SYSTEM</span>
+                    </div>
+                </div>
+                <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a></li>
+                    <li><a href="inventory.html"><i class="fas fa-box"></i><span>Inventory</span></a></li>
+                    <li><a href="purchase.html"><i class="fas fa-cart-plus"></i><span>Purchase</span></a></li>
+                    <li><a href="stockout.html"><i class="fas fa-dolly"></i><span>Stock Out</span></a></li>
+                    <li><a href="suppliers.html"><i class="fas fa-truck"></i><span>Suppliers</span></a></li>
+                    <li class="active"><a href="reports.html"><i class="fas fa-file-lines"></i><span>Reports</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer"><div class="version">v1.0.0</div></div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <main class="main-content">
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+                    <h2 class="page-title">📄 Reports</h2>
+                </div>
+                <div class="header-right">
+                    <div class="notification" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notifBadge">0</span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="avatar"><i class="fas fa-user"></i></div>
+                        <span class="user-name">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <div class="page-content">
+                <!-- Report Type Selection -->
+                <div class="report-tabs glass-card">
+                    <button class="report-tab active" data-report="stock">
+                        <i class="fas fa-boxes-stacked"></i> Current Stock
+                    </button>
+                    <button class="report-tab" data-report="purchase">
+                        <i class="fas fa-cart-plus"></i> Purchase Report
+                    </button>
+                    <button class="report-tab" data-report="lowstock">
+                        <i class="fas fa-exclamation-triangle"></i> Low Stock
+                    </button>
+                    <button class="report-tab" data-report="payments">
+                        <i class="fas fa-credit-card"></i> Pending Payments
+                    </button>
+                    <button class="report-tab" data-report="value">
+                        <i class="fas fa-coins"></i> Inventory Value
+                    </button>
+                </div>
+
+                <!-- Report Controls -->
+                <div class="toolbar glass-card">
+                    <div class="toolbar-left">
+                        <div class="date-range" id="dateRangeFilter" style="display:none;">
+                            <input type="date" id="reportDateFrom" class="filter-date">
+                            <span>to</span>
+                            <input type="date" id="reportDateTo" class="filter-date">
+                            <button class="btn btn-small btn-purple" id="applyDateFilter">Apply</button>
+                        </div>
+                    </div>
+                    <div class="toolbar-right">
+                        <button class="btn btn-success" id="exportExcel">
+                            <i class="fas fa-file-excel"></i> Excel
+                        </button>
+                        <button class="btn btn-danger" id="exportPDF">
+                            <i class="fas fa-file-pdf"></i> PDF
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Report Content -->
+                <div class="glass-card">
+                    <div class="report-header">
+                        <h2 id="reportTitle">Current Stock Report</h2>
+                        <p id="reportDate"></p>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table" id="reportTable">
+                            <thead id="reportTableHead"></thead>
+                            <tbody id="reportTableBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="report-summary" id="reportSummary"></div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notif-header">
+            <h3>Notifications</h3>
+            <button class="notif-close" id="notifClose"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="notif-body" id="notifBody"></div>
+    </div>
+
+    <script src="js/storage.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/report.js"></script>
+</body>
+</html>
