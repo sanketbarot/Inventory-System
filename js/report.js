@@ -8,6 +8,14 @@ let currentReportData = [];
 document.addEventListener('DOMContentLoaded', () => {
     initReportEvents();
     loadReport('stock');
+
+    // Listen to real-time Firebase / Storage sync updates
+    window.addEventListener('storage-update', () => {
+        const activeTab = document.querySelector('.report-tab.active');
+        if (activeTab) {
+            loadReport(activeTab.dataset.report);
+        }
+    });
 });
 
 function initReportEvents() {

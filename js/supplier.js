@@ -12,6 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (getUrlParam('action') === 'add') {
         openAddSupplierModal();
     }
+
+    // Listen to real-time Firebase / Storage sync updates
+    window.addEventListener('storage-update', () => {
+        loadSuppliers();
+        if (typeof currentSupplierId !== 'undefined' && currentSupplierId) {
+            loadSupplierPurchases(currentSupplierId);
+            loadSupplierPending(currentSupplierId);
+            loadSupplierPayments(currentSupplierId);
+        }
+    });
 });
 
 function initSupplierEvents() {

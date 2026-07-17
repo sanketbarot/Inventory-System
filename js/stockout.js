@@ -9,6 +9,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (getUrlParam('action') === 'add') {
         openStockOutModal();
     }
+
+    // Listen to real-time Firebase / Storage sync updates
+    window.addEventListener('storage-update', () => {
+        loadStockOuts();
+        loadProductDropdown();
+    });
 });
 
 function initStockOutEvents() {

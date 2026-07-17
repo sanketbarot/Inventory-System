@@ -733,6 +733,14 @@
     </div>
 
     <script>
+        // Apply Saved Theme Immediately to prevent theme flash
+        (function applySavedTheme() {
+            const currentTheme = localStorage.getItem('inv_theme') || 'sunset';
+            if (currentTheme !== 'sunset') {
+                document.documentElement.classList.add(`theme-${currentTheme}`);
+            }
+        })();
+
         /* ============================================
            LOGIN PAGE SCRIPT
            ============================================ */

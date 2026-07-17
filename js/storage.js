@@ -97,6 +97,9 @@ const Storage = {
     setData(key, data) {
         try {
             localStorage.setItem(key, JSON.stringify(data));
+            if (window.FirebaseSync && typeof FirebaseSync.uploadKey === 'function') {
+                FirebaseSync.uploadKey(key, data);
+            }
             return true;
         } catch (e) {
             console.error('Error writing to storage:', e);

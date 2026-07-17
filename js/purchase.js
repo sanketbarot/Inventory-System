@@ -11,6 +11,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (getUrlParam('action') === 'add') {
         openNewPurchaseModal();
     }
+
+    // Listen to real-time Firebase / Storage sync updates
+    window.addEventListener('storage-update', () => {
+        loadPurchases();
+        loadSupplierOptions();
+        loadProductOptions();
+    });
 });
 
 function initPurchaseEvents() {
@@ -158,6 +165,27 @@ function openNewPurchaseModal() {
     productLineCounter = 0;
     document.getElementById('productLinesBody').innerHTML = '';
     addProductLine();
+
+    // Prefill product details if product_id is in URL query parameters
+    const prefilledProductId = getUrlParam('product_id');
+    if (prefilledProductId) {
+        const firstLineProductSelect = document.querySelector('#productLinesBody select.line-product');
+        if (firstLineProductSelect) {
+            firstLineProductSelect.value = prefilledProductId;
+            
+            const product = Storage.getProductById(prefilledProductId);
+            if (product) {
+                const row = document.getElementById(`line_${productLineCounter}`);
+                const rateInput = row.querySelector('.line-rate');
+                if (rateInput) rateInput.value = product.purchasePrice || 0;
+                
+                if (product.supplierId) {
+                    document.getElementById('purchaseSupplier').value = product.supplierId;
+                }
+                lineChanged(productLineCounter);
+            }
+        }
+    }
 
     openModal('purchaseModal');
 }

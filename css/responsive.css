@@ -205,6 +205,11 @@
     .toast {
         min-width: auto;
     }
+
+    /* Settings Page */
+    .settings-grid-layout {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ── Mobile Portrait (≤ 480px) ── */

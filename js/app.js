@@ -3,6 +3,14 @@
    With Authentication & Indian Time
    ============================================ */
 
+// Apply Saved Theme Immediately to prevent theme flash
+(function applySavedTheme() {
+    const currentTheme = localStorage.getItem('inv_theme') || 'sunset';
+    if (currentTheme !== 'sunset') {
+        document.documentElement.classList.add(`theme-${currentTheme}`);
+    }
+})();
+
 // ── Auth Check on Page Load ──
 document.addEventListener('DOMContentLoaded', () => {
     // Check authentication
@@ -193,6 +201,12 @@ function initNotifications() {
             </div>
         `).join('');
     }
+
+    loadNotifications();
+
+    window.addEventListener('storage-update', () => {
+        loadNotifications();
+    });
 
     if (notifBtn) {
         notifBtn.addEventListener('click', () => {

@@ -13,6 +13,13 @@ document.addEventListener('DOMContentLoaded', () => {
     if (getUrlParam('action') === 'add') {
         openAddProductModal();
     }
+
+    // Listen to real-time Firebase / Storage sync updates
+    window.addEventListener('storage-update', () => {
+        loadProducts();
+        loadCategoryFilter();
+        loadSupplierDropdown();
+    });
 });
 
 function initInventoryEvents() {
@@ -30,6 +37,10 @@ function initInventoryEvents() {
     document.getElementById('closeDeleteModal').addEventListener('click', () => closeModal('deleteModal'));
     document.getElementById('cancelDelete').addEventListener('click', () => closeModal('deleteModal'));
     document.getElementById('confirmDelete').addEventListener('click', confirmDeleteProduct);
+
+    // Barcode Modal
+    document.getElementById('closeBarcodeModal').addEventListener('click', () => closeModal('barcodeModal'));
+    document.getElementById('printBarcodeBtn').addEventListener('click', printBarcodeLabel);
 
     // Search
     document.getElementById('productSearch').addEventListener('input', filterProducts);
@@ -87,6 +98,9 @@ function renderProducts(products) {
                 <td>${getStockStatusBadge(p)}</td>
                 <td>
                     <div class="action-btns">
+                        <button class="btn-icon" onclick="openBarcodeModal('${p.id}')" title="Generate Barcode" style="color: var(--purple);">
+                            <i class="fas fa-barcode"></i>
+                        </button>
                         <button class="btn-icon edit" onclick="editProduct('${p.id}')" title="Edit">
                             <i class="fas fa-edit"></i>
                         </button>
@@ -241,4 +255,66 @@ function confirmDeleteProduct() {
         loadCategoryFilter();
         showToast('Product deleted successfully!', 'success');
     }
+}
+
+// ============================================
+// BARCODE GENERATOR & PRINTER
+// ============================================
+function openBarcodeModal(productId) {
+    const product = Storage.getProductById(productId);
+    if (!product) return;
+
+    document.getElementById('barcodeProdName').textContent = product.name;
+    document.getElementById('barcodeProdPrice').textContent = `Price: ${Storage.formatCurrency(product.purchasePrice)}`;
+    document.getElementById('barcodeSKU').textContent = product.id;
+
+    // Render barcode using JsBarcode
+    try {
+        if (window.JsBarcode) {
+            JsBarcode("#barcodeSVG", product.id, {
+                format: "CODE128",
+                lineColor: "#000",
+                width: 1.8,
+                height: 50,
+                displayValue: false
+            });
+        }
+    } catch (e) {
+        console.error('JsBarcode render error', e);
+    }
+
+    openModal('barcodeModal');
+}
+
+function printBarcodeLabel() {
+    const printContent = document.getElementById('barcodeLabelPrintArea').outerHTML;
+    const printWindow = window.open('', '_blank', 'width=600,height=400');
+    
+    printWindow.document.write(`
+        <html>
+        <head>
+            <title>Print Label</title>
+            <style>
+                body {
+                    display: flex;
+                    justify-content: center;
+                    align-items: center;
+                    height: 100vh;
+                    margin: 0;
+                    background: white;
+                }
+                @media print {
+                    body { margin: 0; }
+                    #print-wrapper { border: none !important; }
+                }
+            </style>
+        </head>
+        <body onload="window.print(); window.close();">
+            <div id="print-wrapper" style="background: white; color: black; padding: 20px; border-radius: 8px; border: 1px solid #ddd; width: 100%; max-width: 280px; text-align: center; font-family: monospace;">
+                \${printContent}
+            </div>
+        </body>
+        </html>
+    `);
+    printWindow.document.close();
 }

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory System - Settings</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/responsive.css">
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Modern Inventory Management System - Track products, purchases, suppliers, and generate reports">
+    <meta name="keywords" content="inventory, stock, management, business, warehouse, POS">
+    <meta name="author" content="AI Tool Cor">
+    <meta name="robots" content="index, follow">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <i class="fas fa-boxes-stacked"></i>
+                    <div class="logo-text">
+                        <span class="logo-title">INVENTORY</span>
+                        <span class="logo-subtitle">SYSTEM</span>
+                    </div>
+                </div>
+                <button class="sidebar-close" id="sidebarClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a href="index.html"><i class="fas fa-chart-pie"></i><span>Dashboard</span></a></li>
+                    <li><a href="inventory.html"><i class="fas fa-box"></i><span>Inventory</span></a></li>
+                    <li><a href="purchase.html"><i class="fas fa-cart-plus"></i><span>Purchase</span></a></li>
+                    <li><a href="stockout.html"><i class="fas fa-dolly"></i><span>Stock Out</span></a></li>
+                    <li><a href="suppliers.html"><i class="fas fa-truck"></i><span>Suppliers</span></a></li>
+                    <li><a href="reports.html"><i class="fas fa-file-lines"></i><span>Reports</span></a></li>
+                    <li class="active"><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer"><div class="version">v2.0.0</div></div>
+        </aside>
+
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <button class="menu-toggle" id="menuToggle">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                    <h2 class="page-title">⚙️ System Settings</h2>
+                </div>
+                <div class="header-right">
+                    <div class="notification" id="notificationBtn">
+                        <i class="fas fa-bell"></i>
+                        <span class="badge" id="notifBadge">0</span>
+                    </div>
+                    <div class="user-profile">
+                        <div class="avatar"><i class="fas fa-user"></i></div>
+                        <span class="user-name">Admin</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <div class="page-content">
+                <div class="row-grid settings-grid-layout">
+                    <!-- Column 1: Theme Selector & Backup -->
+                    <div style="display: flex; flex-direction: column; gap: 20px;">
+                        <div class="glass-card settings-card">
+                        <div class="card-header-icon">
+                            <i class="fas fa-palette"></i>
+                            <h3>Visual Themes</h3>
+                        </div>
+                        <p class="settings-desc">Choose a visual interface theme to match your preference. Changes apply instantly across all pages.</p>
+                        
+                        <div class="theme-list">
+                            <!-- Theme 1: Sunset Glassmorphism -->
+                            <div class="theme-card" data-theme="sunset">
+                                <div class="theme-preview bg-sunset">
+                                    <div class="preview-glass"></div>
+                                </div>
+                                <div class="theme-details">
+                                    <span>Sunset Gradient (Default)</span>
+                                    <p>Vibrant warm glassmorphism</p>
+                                </div>
+                                <i class="fas fa-circle-check select-icon"></i>
+                            </div>
+
+                            <!-- Theme 2: Midnight Obsidian -->
+                            <div class="theme-card" data-theme="dark">
+                                <div class="theme-preview bg-midnight">
+                                    <div class="preview-glass"></div>
+                                </div>
+                                <div class="theme-details">
+                                    <span>Midnight Dark Mode</span>
+                                    <p>Deep indigo-slate dark layout</p>
+                                </div>
+                                <i class="fas fa-circle-check select-icon"></i>
+                            </div>
+
+                            <!-- Theme 3: Cyberpunk Neon -->
+                            <div class="theme-card" data-theme="cyberpunk">
+                                <div class="theme-preview bg-cyberpunk">
+                                    <div class="preview-glass"></div>
+                                </div>
+                                <div class="theme-details">
+                                    <span>Cyberpunk Neon</span>
+                                    <p>Vibrant pink & neon cyan mode</p>
+                                </div>
+                                <i class="fas fa-circle-check select-icon"></i>
+                            </div>
+
+                            <!-- Theme 4: Emerald Mint -->
+                            <div class="theme-card" data-theme="mint">
+                                <div class="theme-preview bg-mint">
+                                    <div class="preview-glass"></div>
+                                </div>
+                                <div class="theme-details">
+                                    <span>Emerald Mint</span>
+                                    <p>Fresh light mint green layout</p>
+                                </div>
+                                <i class="fas fa-circle-check select-icon"></i>
+                            </div>
+
+                            <!-- Theme 5: Professional Slate -->
+                            <div class="theme-card" data-theme="slate">
+                                <div class="theme-preview bg-slate">
+                                    <div class="preview-glass"></div>
+                                </div>
+                                <div class="theme-details">
+                                    <span>Professional Slate</span>
+                                    <p>Clean office dark slate styling</p>
+                                </div>
+                                <i class="fas fa-circle-check select-icon"></i>
+                        </div>
+
+                        <!-- Backup & Restore Card -->
+                        <div class="glass-card settings-card">
+                            <div class="card-header-icon">
+                                <i class="fas fa-file-export"></i>
+                                <h3>Data Backup & Restore</h3>
+                            </div>
+                            <p class="settings-desc">Download a complete backup of your local inventory database or restore your system from a previous backup file.</p>
+                            
+                            <div style="display: flex; flex-direction: column; gap: 15px;">
+                                <button class="btn btn-primary full-width" id="exportBackupBtn">
+                                    <i class="fas fa-download"></i> Export JSON Backup
+                                </button>
+                                <div style="display: flex; align-items: center; justify-content: center; border: 2px dashed rgba(255,255,255,0.2); border-radius: var(--radius-md); padding: 18px; position: relative; cursor: pointer; background: rgba(255,255,255,0.05); transition: var(--transition);" id="importDragArea">
+                                    <input type="file" id="importBackupInput" accept=".json" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer;">
+                                    <div style="text-align: center; color: var(--text-medium); font-size: 13px;" id="importStatusText">
+                                        <i class="fas fa-file-import" style="font-size: 24px; margin-bottom: 8px; color: var(--purple); display: block; margin-left: auto; margin-right: auto;"></i>
+                                        <span>Click or drag JSON backup here</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Firebase Sync Config -->
+                    <div class="glass-card settings-card">
+                        <div class="card-header-icon">
+                            <i class="fas fa-cloud"></i>
+                            <h3>Firebase Cloud Sync</h3>
+                        </div>
+                        <p class="settings-desc">Link your own Firebase Firestore project to synchronize inventory data across multiple devices in real-time.</p>
+                        
+                        <div class="sync-toggle-wrapper">
+                            <div class="toggle-info">
+                                <span class="toggle-title">Enable Real-Time Cloud Sync</span>
+                                <span class="toggle-sub">Requires internet connection and Firestore setup</span>
+                            </div>
+                            <label class="switch">
+                                <input type="checkbox" id="firebaseSyncToggle">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+
+                        <div class="status-wrapper">
+                            <span>Connection Status:</span>
+                            <span id="syncStatusBadge" class="status-badge status-offline">
+                                <i class="fas fa-circle-xmark"></i> Sync Disabled
+                            </span>
+                        </div>
+
+                        <form id="firebaseConfigForm" class="firebase-form">
+                            <div class="form-grid">
+                                <div class="form-group full-width">
+                                    <label>API Key *</label>
+                                    <input type="password" id="fbApiKey" required placeholder="AIzaSy...">
+                                </div>
+                                <div class="form-group">
+                                    <label>Project ID *</label>
+                                    <input type="text" id="fbProjectId" required placeholder="my-inventory-app">
+                                </div>
+                                <div class="form-group">
+                                    <label>Auth Domain</label>
+                                    <input type="text" id="fbAuthDomain" placeholder="my-inventory-app.firebaseapp.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Storage Bucket</label>
+                                    <input type="text" id="fbStorageBucket" placeholder="my-inventory-app.appspot.com">
+                                </div>
+                                <div class="form-group">
+                                    <label>Messaging Sender ID</label>
+                                    <input type="text" id="fbMessagingSenderId" placeholder="1234567890">
+                                </div>
+                                <div class="form-group full-width">
+                                    <label>App ID *</label>
+                                    <input type="text" id="fbAppId" required placeholder="1:1234567890:web:abcdef123456">
+                                </div>
+                            </div>
+                            <div class="firebase-actions">
+                                <button type="button" class="btn btn-secondary" id="testFirebaseBtn">
+                                    <i class="fas fa-plug"></i> Test Connection
+                                </button>
+                                <button type="submit" class="btn btn-primary" id="saveFirebaseBtn">
+                                    <i class="fas fa-floppy-disk"></i> Save & Sync
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Firebase Console Logs -->
+                        <div class="console-wrapper">
+                            <div class="console-header">
+                                <span><i class="fas fa-terminal"></i> Synchronization Activity Log</span>
+                                <button class="btn btn-small btn-secondary" id="clearLogsBtn">
+                                    <i class="fas fa-trash-can"></i> Clear
+                                </button>
+                            </div>
+                            <div class="console-body" id="firebaseSyncConsole">
+                                <div class="console-placeholder">// Console logs empty. Toggle sync or connect to view logs...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Panel -->
+    <div class="notification-panel" id="notificationPanel">
+        <div class="notif-header">
+            <h3>Notifications</h3>
+            <button class="notif-close" id="notifClose"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="notif-body" id="notifBody"></div>
+    </div>
+
+    <!-- Firebase Sync dependencies -->
+    <script src="js/storage.js"></script>
+    <script src="js/firebase-sync.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/settings.js"></script>
+</body>
+</html>

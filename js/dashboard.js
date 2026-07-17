@@ -18,6 +18,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initDateFilter();
     loadDashboard();
+
+    // Listen to real-time Firebase / Storage sync updates
+    window.addEventListener('storage-update', () => {
+        refreshDashboard();
+    });
 });
 
 // ============================================
@@ -752,16 +757,21 @@ function loadLowStockTable() {
     const allAlerts = [...outOfStock, ...lowStock].slice(0, 5);
 
     if (allAlerts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="empty-state">All items are well stocked ✅</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="5" class="empty-state">All items are well stocked ✅</td></tr>';
         return;
     }
 
     tbody.innerHTML = allAlerts.map(p => `
         <tr>
-            <td>${p.name}</td>
+            <td><strong>${p.name}</strong></td>
             <td>${p.currentStock} ${p.unit}</td>
             <td>${p.minimumStock} ${p.unit}</td>
             <td>${getStockStatusBadge(p)}</td>
+            <td>
+                <a href="purchase.html?action=add&product_id=${p.id}" class="btn btn-small btn-purple" style="padding: 4px 10px; font-size: 11px; display: inline-flex; align-items: center; gap: 4px;">
+                    <i class="fas fa-cart-plus"></i> Reorder
+                </a>
+            </td>
         </tr>
     `).join('');
 }

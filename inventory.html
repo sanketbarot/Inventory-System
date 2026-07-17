@@ -66,6 +66,7 @@
                     <li><a href="stockout.html"><i class="fas fa-dolly"></i><span>Stock Out</span></a></li>
                     <li><a href="suppliers.html"><i class="fas fa-truck"></i><span>Suppliers</span></a></li>
                     <li><a href="reports.html"><i class="fas fa-file-lines"></i><span>Reports</span></a></li>
+                    <li><a href="settings.html"><i class="fas fa-cog"></i><span>Settings</span></a></li>
                 </ul>
             </nav>
             <div class="sidebar-footer"><div class="version">v1.0.0</div></div>
@@ -226,6 +227,28 @@
             </div>
         </div>
     </div>
+    <!-- Barcode Label Modal -->
+    <div class="modal-overlay" id="barcodeModal">
+        <div class="modal glass-modal modal-small">
+            <div class="modal-header">
+                <h2>Product Barcode Label</h2>
+                <button class="modal-close" id="closeBarcodeModal"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="modal-body" style="display: flex; flex-direction: column; align-items: center; gap: 15px; padding: 25px;">
+                <div id="barcodeLabelPrintArea" style="background: white; color: black; padding: 20px; border-radius: 8px; border: 1px solid #ddd; width: 100%; max-width: 280px; text-align: center; font-family: monospace;">
+                    <div style="font-size: 14px; font-weight: bold; margin-bottom: 5px;" id="barcodeProdName">Product Name</div>
+                    <div style="font-size: 12px; margin-bottom: 10px;" id="barcodeProdPrice">Price: ₹0.00</div>
+                    <div style="display: flex; justify-content: center; margin-bottom: 5px;">
+                        <svg id="barcodeSVG"></svg>
+                    </div>
+                    <div style="font-size: 11px; margin-top: 5px; letter-spacing: 3px;" id="barcodeSKU">PRD12345</div>
+                </div>
+                <div style="width: 100%; display: flex; gap: 10px; margin-top: 10px;">
+                    <button class="btn btn-primary full-width" id="printBarcodeBtn"><i class="fas fa-print"></i> Print Label</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Notification Panel -->
     <div class="notification-panel" id="notificationPanel">
@@ -237,7 +260,9 @@
     </div>
 
     <script src="js/storage.js"></script>
+    <script src="js/firebase-sync.js"></script>
     <script src="js/app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script src="js/inventory.js"></script>
 </body>
 </html>
