@@ -231,6 +231,32 @@ function initBackupRestore() {
         exportBtn.addEventListener('click', exportBackup);
     }
 
+    const clearBtn = document.getElementById('clearDataBtn');
+    if (clearBtn) {
+        clearBtn.addEventListener('click', function () {
+            if (confirm('⚠️ WARNING: RESET DATABASE\n\nThis will completely delete all products, suppliers, purchase logs, stockout logs, and activity records.\n\nAre you sure you want to clear all data? This cannot be undone.')) {
+                localStorage.removeItem('inv_suppliers');
+                localStorage.removeItem('inv_products');
+                localStorage.removeItem('inv_purchases');
+                localStorage.removeItem('inv_stockouts');
+                localStorage.removeItem('inv_payments');
+                localStorage.removeItem('inv_activity_log');
+                localStorage.setItem('inv_seeded', 'false'); // reset flag to trigger seedDefaultData
+
+                Storage.seedDefaultData(); // initialize empty structure
+
+                // Clear Firebase Sync if connected
+                if (window.FirebaseSync && FirebaseSync.isConnected()) {
+                    const keys = ['inv_products', 'inv_suppliers', 'inv_purchases', 'inv_stockouts', 'inv_payments', 'inv_activity_log'];
+                    keys.forEach(k => FirebaseSync.uploadKey(k, []));
+                }
+
+                showToast('All inventory data has been cleared!', 'success');
+                setTimeout(() => window.location.reload(), 1200);
+            }
+        });
+    }
+
     if (importInput) {
         importInput.addEventListener('change', function (e) {
             const file = e.target.files[0];
