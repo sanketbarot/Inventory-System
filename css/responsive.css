@@ -248,6 +248,25 @@
         display: none;
     }
 
+    .header-widgets {
+        gap: 6px;
+        margin-right: 5px;
+    }
+
+    .sim-widget {
+        padding: 6px 8px;
+    }
+
+    .sim-widget .sim-label {
+        display: none;
+    }
+
+    .header-theme-select {
+        padding: 6px 8px;
+        font-size: 11px;
+        max-width: 95px;
+    }
+
     .summary-items {
         gap: 10px;
     }

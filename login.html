@@ -629,10 +629,10 @@
         <!-- Left Branding Panel -->
         <div class="login-branding">
             <div class="branding-icon">
-                <i class="fas fa-boxes-stacked"></i>
+                <i class="fas fa-pizza-slice"></i>
             </div>
-            <h2 class="branding-title">Inventory System</h2>
-            <p class="branding-subtitle">Manage your inventory efficiently with our modern system</p>
+            <h2 class="branding-title">Crust & Chilly</h2>
+            <p class="branding-subtitle">Manage pizza ingredients, gelato stock, and suppliers in real-time</p>
 
             <div class="branding-features">
                 <div class="feature">
@@ -733,14 +733,6 @@
     </div>
 
     <script>
-        // Apply Saved Theme Immediately to prevent theme flash
-        (function applySavedTheme() {
-            const currentTheme = localStorage.getItem('inv_theme') || 'sunset';
-            if (currentTheme !== 'sunset') {
-                document.documentElement.classList.add(`theme-${currentTheme}`);
-            }
-        })();
-
         /* ============================================
            LOGIN PAGE SCRIPT
            ============================================ */
@@ -750,9 +742,9 @@
             {
                 username: 'admin',
                 password: 'admin123',
-                name: 'Admin',
-                role: 'Administrator',
-                avatar: '👤'
+                name: 'Sanket Barot',
+                role: 'Admin',
+                avatar: 'S'
             },
             {
                 username: 'manager',
@@ -773,6 +765,17 @@
         // Initialize users in storage if not exists
         if (!localStorage.getItem('inv_users')) {
             localStorage.setItem('inv_users', JSON.stringify(DEFAULT_USERS));
+        } else {
+            // Force update Admin name to Sanket Barot
+            try {
+                let currentUsers = JSON.parse(localStorage.getItem('inv_users'));
+                let adminUser = currentUsers.find(u => u.username === 'admin');
+                if (adminUser && adminUser.name === 'Admin') {
+                    adminUser.name = 'Sanket Barot';
+                    adminUser.avatar = 'S';
+                    localStorage.setItem('inv_users', JSON.stringify(currentUsers));
+                }
+            } catch(e) {}
         }
 
         // ── Indian Time (IST) ──

@@ -3,25 +3,72 @@
    With Authentication & Indian Time
    ============================================ */
 
-// Apply Saved Theme Immediately to prevent theme flash
-(function applySavedTheme() {
-    const currentTheme = localStorage.getItem('inv_theme') || 'sunset';
-    if (currentTheme !== 'sunset') {
-        document.documentElement.classList.add(`theme-${currentTheme}`);
+// Sync across tabs/windows in real-time
+window.addEventListener('storage', (e) => {
+    if (e.key && e.key.startsWith('inv_')) {
+        window.dispatchEvent(new CustomEvent('storage-update', { detail: { key: e.key } }));
     }
-})();
+});
 
 // ── Auth Check on Page Load ──
 document.addEventListener('DOMContentLoaded', () => {
     // Check authentication
     if (!Storage.checkAuth()) return;
 
+    injectBrandAndWidgets();
     initSidebar();
     initNotifications();
     initUserProfile();
     initIndianTimeClock();
     initLogout();
 });
+
+function injectBrandAndWidgets() {
+    // Insert Header Widgets (Live Simulator Toggle only)
+    const headerRight = document.querySelector('.header-right');
+    if (headerRight) {
+        // Prevent duplicate insertion
+        if (!document.getElementById('headerWidgets')) {
+            const widgetsContainer = document.createElement('div');
+            widgetsContainer.className = 'header-widgets';
+            widgetsContainer.id = 'headerWidgets';
+
+            // Live Simulator Toggle HTML
+            const simWidget = document.createElement('div');
+            simWidget.className = 'sim-widget';
+            simWidget.id = 'headerSimToggle';
+            simWidget.title = 'Toggle Live Orders Simulation';
+            simWidget.innerHTML = `
+                <div class="sim-pulse"></div>
+                <span class="sim-label">Live Sim</span>
+            `;
+            simWidget.addEventListener('click', (e) => {
+                e.stopPropagation();
+                if (window.LiveSimulator) {
+                    window.LiveSimulator.toggle();
+                } else {
+                    console.error('LiveSimulator not loaded');
+                }
+            });
+
+            widgetsContainer.appendChild(simWidget);
+
+            // Insert before notification button
+            const notifBtn = document.getElementById('notificationBtn');
+            if (notifBtn) {
+                headerRight.insertBefore(widgetsContainer, notifBtn);
+            } else {
+                headerRight.appendChild(widgetsContainer);
+            }
+
+            // Sync simulator button initial state if simulator is active
+            if (window.LiveSimulator && window.LiveSimulator.isActive) {
+                simWidget.classList.add('active');
+                simWidget.querySelector('.sim-label').textContent = 'Sim Active';
+            }
+        }
+    }
+}
 
 // ── Initialize User Profile ──
 function initUserProfile() {
@@ -34,11 +81,17 @@ function initUserProfile() {
         userNameEl.textContent = user.name;
     }
 
+    // Update user role in header
+    const userRoleEl = document.querySelector('.user-role');
+    if (userRoleEl) {
+        userRoleEl.textContent = user.role;
+    }
+
     // Update avatar
     const avatarEl = document.querySelector('.avatar');
     if (avatarEl) {
-        if (user.avatar && user.avatar !== '👤') {
-            avatarEl.innerHTML = `<span style="font-size:20px;">${user.avatar}</span>`;
+        if (user.avatar) {
+            avatarEl.innerHTML = `<div class="profile-avatar-circle" style="width: 32px; height: 32px; border-radius: 50%; background: var(--purple-light); color: var(--purple); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px;">${user.avatar}</div>`;
         }
     }
 
@@ -51,7 +104,29 @@ function initUserProfile() {
         else if (hour >= 17 && hour < 21) greeting = 'Good Evening';
         else if (hour >= 21 || hour < 5) greeting = 'Good Night';
 
-        welcomeEl.textContent = `${greeting}, ${user.name}! 👋`;
+        // Slice to get the first name (e.g. "Sanket")
+        const firstName = user.name.split(' ')[0];
+        welcomeEl.textContent = `${greeting}, ${firstName}! 🖐️`;
+    }
+
+    // Inject Sidebar Profile Card
+    const sidebarProfileWrapper = document.querySelector('.sidebar-profile-wrapper');
+    if (sidebarProfileWrapper) {
+        const email = user.username === 'admin' ? 'sanketbarot2901@gmail.com' : user.username + '@crustchilly.com';
+        sidebarProfileWrapper.innerHTML = `
+            <div class="sidebar-profile">
+                <div class="profile-user-details">
+                    <div class="profile-avatar">${user.avatar || 'S'}</div>
+                    <div class="profile-info">
+                        <span class="profile-name">${user.name}</span>
+                        <span class="profile-email" title="${email}">${email}</span>
+                    </div>
+                </div>
+                <button class="profile-signout" onclick="Storage.logout()">
+                    <i class="fas fa-sign-out-alt"></i> Sign Out
+                </button>
+            </div>
+        `;
     }
 }
 

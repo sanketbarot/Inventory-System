@@ -97,6 +97,8 @@ const Storage = {
     setData(key, data) {
         try {
             localStorage.setItem(key, JSON.stringify(data));
+            // Trigger local update for immediate UI refresh in current tab
+            window.dispatchEvent(new CustomEvent('storage-update', { detail: { key: key } }));
             if (window.FirebaseSync && typeof FirebaseSync.uploadKey === 'function') {
                 FirebaseSync.uploadKey(key, data);
             }
@@ -230,11 +232,136 @@ const Storage = {
         };
     },
 
+    seedDefaultData() {
+        const todayStr = this.getToday();
+        const date5DaysAgo = new Date();
+        date5DaysAgo.setDate(date5DaysAgo.getDate() - 5);
+        const d5Str = date5DaysAgo.toISOString().split('T')[0];
+
+        const date2DaysAgo = new Date();
+        date2DaysAgo.setDate(date2DaysAgo.getDate() - 2);
+        const d2Str = date2DaysAgo.toISOString().split('T')[0];
+
+        const defaultSuppliers = [
+            { id: 'SUP_dairy', name: 'Dairy Fresh Premium', phone: '+91 98765 43210', address: 'Anand, Gujarat', totalPurchase: 0, pendingAmount: 0, lastPayment: null },
+            { id: 'SUP_spices', name: 'Spice & Herb Hub', phone: '+91 87654 32109', address: 'Spice Market, Mumbai', totalPurchase: 0, pendingAmount: 0, lastPayment: null },
+            { id: 'SUP_gelato', name: 'Coldstone Gelato Base', phone: '+91 76543 21098', address: 'Industrial Area, Pune', totalPurchase: 0, pendingAmount: 0, lastPayment: null },
+            { id: 'SUP_farms', name: 'Green Earth Farms', phone: '+91 65432 10987', address: 'Ooty, Tamil Nadu', totalPurchase: 0, pendingAmount: 0, lastPayment: null }
+        ];
+
+        const defaultProducts = [
+            { id: 'PRD_cheese', name: 'Mozzarella Cheese', category: 'Dairy & Cheese', unit: 'kg', currentStock: 25, minimumStock: 5, purchasePrice: 450, supplierId: 'SUP_dairy' },
+            { id: 'PRD_pep', name: 'Pepperoni Slices', category: 'Pizza Toppings', unit: 'kg', currentStock: 15, minimumStock: 3, purchasePrice: 850, supplierId: 'SUP_spices' },
+            { id: 'PRD_sauce', name: 'Pizza Sauce (Classic)', category: 'Sauces & Spices', unit: 'Litre', currentStock: 40, minimumStock: 8, purchasePrice: 150, supplierId: 'SUP_spices' },
+            { id: 'PRD_dough', name: 'Fresh Pizza Dough (Regular)', category: 'Crusts & Dough', unit: 'Pieces', currentStock: 120, minimumStock: 20, purchasePrice: 15, supplierId: 'SUP_dairy' },
+            { id: 'PRD_paneer', name: 'Diced Paneer (Chilly Spiced)', category: 'Dairy & Cheese', unit: 'kg', currentStock: 18, minimumStock: 4, purchasePrice: 350, supplierId: 'SUP_dairy' },
+            { id: 'PRD_vgelato', name: 'Vanilla Bean Gelato', category: 'Ice Cream & Desserts', unit: 'Litre', currentStock: 12, minimumStock: 3, purchasePrice: 300, supplierId: 'SUP_gelato' },
+            { id: 'PRD_cgelato', name: 'Spicy Chilli Gelato', category: 'Ice Cream & Desserts', unit: 'Litre', currentStock: 8, minimumStock: 2, purchasePrice: 350, supplierId: 'SUP_gelato' },
+            { id: 'PRD_flakes', name: 'Red Chilli Flakes', category: 'Sauces & Spices', unit: 'kg', currentStock: 5, minimumStock: 1, purchasePrice: 250, supplierId: 'SUP_spices' },
+            { id: 'PRD_guava', name: 'Chilli Guava Syrup', category: 'Beverages', unit: 'Litre', currentStock: 15, minimumStock: 3, purchasePrice: 180, supplierId: 'SUP_gelato' },
+            { id: 'PRD_jalapeno', name: 'Fresh Jalapenos', category: 'Vegetables & Herbs', unit: 'kg', currentStock: 4, minimumStock: 5, purchasePrice: 120, supplierId: 'SUP_farms' }
+        ];
+
+        const defaultPurchases = [
+            {
+                id: 'PUR_1',
+                invoiceNo: 'INV-2026-001',
+                supplierId: 'SUP_dairy',
+                date: d5Str,
+                totalAmount: 18000,
+                paidAmount: 18000,
+                dueAmount: 0,
+                status: 'paid',
+                products: [
+                    { productId: 'PRD_cheese', quantity: 30, price: 450 },
+                    { productId: 'PRD_dough', quantity: 300, price: 15 }
+                ],
+                createdAt: date5DaysAgo.toISOString()
+            },
+            {
+                id: 'PUR_2',
+                invoiceNo: 'INV-2026-002',
+                supplierId: 'SUP_spices',
+                date: d2Str,
+                totalAmount: 15250,
+                paidAmount: 10000,
+                dueAmount: 5250,
+                status: 'pending',
+                dueDate: todayStr,
+                products: [
+                    { productId: 'PRD_pep', quantity: 15, price: 850 },
+                    { productId: 'PRD_sauce', quantity: 15, price: 150 },
+                    { productId: 'PRD_flakes', quantity: 2, price: 250 }
+                ],
+                createdAt: date2DaysAgo.toISOString()
+            }
+        ];
+
+        const defaultStockouts = [
+            {
+                id: 'SO_1',
+                productId: 'PRD_cheese',
+                quantity: 5,
+                date: d2Str,
+                reason: 'Used for Pepperoni Pizza orders',
+                createdAt: date2DaysAgo.toISOString()
+            },
+            {
+                id: 'SO_2',
+                productId: 'PRD_jalapeno',
+                quantity: 1,
+                date: todayStr,
+                reason: 'Used for Spicy Chilli Paneer Pizza orders',
+                createdAt: new Date().toISOString()
+            }
+        ];
+
+        const defaultPayments = [
+            {
+                id: 'PAY_1',
+                purchaseId: 'PUR_2',
+                supplierId: 'SUP_spices',
+                amount: 10000,
+                date: d2Str,
+                timestamp: date2DaysAgo.toISOString(),
+                createdAt: date2DaysAgo.toISOString()
+            }
+        ];
+
+        const defaultLogs = [
+            { id: 'LOG_1', type: 'system_init', message: 'Crust & Chilly Inventory System initialized.', userId: 'system', userName: 'System', date: d5Str, time: '10:00:00 AM', timestamp: date5DaysAgo.toISOString() },
+            { id: 'LOG_2', type: 'purchase', message: 'New purchase: INV-2026-001 from Dairy Fresh Premium - ₹18,000', userId: 'admin', userName: 'Sanket Barot', date: d5Str, time: '11:00:00 AM', timestamp: date5DaysAgo.toISOString() },
+            { id: 'LOG_3', type: 'purchase', message: 'New purchase: INV-2026-002 from Spice & Herb Hub - ₹15,250', userId: 'admin', userName: 'Sanket Barot', date: d2Str, time: '12:00:00 PM', timestamp: date2DaysAgo.toISOString() },
+            { id: 'LOG_4', type: 'payment', message: 'Payment recorded: ₹10,000 to Spice & Herb Hub', userId: 'admin', userName: 'Sanket Barot', date: d2Str, time: '02:30:00 PM', timestamp: date2DaysAgo.toISOString() },
+            { id: 'LOG_5', type: 'stockout', message: 'Stock out: 5 kg of Mozzarella Cheese - Reason: Pizza orders', userId: 'staff', userName: 'Staff', date: d2Str, time: '05:00:00 PM', timestamp: date2DaysAgo.toISOString() }
+        ];
+
+        // Save collections directly to local storage to set seed baseline
+        localStorage.setItem('inv_suppliers', JSON.stringify(defaultSuppliers));
+        localStorage.setItem('inv_products', JSON.stringify(defaultProducts));
+        localStorage.setItem('inv_purchases', JSON.stringify(defaultPurchases));
+        localStorage.setItem('inv_stockouts', JSON.stringify(defaultStockouts));
+        localStorage.setItem('inv_payments', JSON.stringify(defaultPayments));
+        localStorage.setItem('inv_activity_log', JSON.stringify(defaultLogs));
+        localStorage.setItem('inv_seeded', 'true');
+
+        // Recalculate totals
+        this.updateSupplierTotals('SUP_dairy');
+        this.updateSupplierTotals('SUP_spices');
+        this.updateSupplierTotals('SUP_gelato');
+        this.updateSupplierTotals('SUP_farms');
+    },
+
     // ============================================
     // PRODUCTS
     // ============================================
     getProducts() {
-        return this.getData('inv_products');
+        let products = this.getData('inv_products');
+        if (products.length === 0 && localStorage.getItem('inv_seeded') !== 'true') {
+            this.seedDefaultData();
+            products = this.getData('inv_products');
+        }
+        return products;
     },
 
     getProductById(id) {

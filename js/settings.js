@@ -5,48 +5,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     if (!Storage.checkAuth()) return;
 
-    initThemeSelector();
     initFirebaseConfigForm();
     listenToFirebaseLogs();
     initBackupRestore();
 });
 
-// ============================================
-// THEME SELECTOR
-// ============================================
-function initThemeSelector() {
-    const themeCards = document.querySelectorAll('.theme-card');
-    const currentTheme = localStorage.getItem('inv_theme') || 'sunset';
-
-    // Highlight current active theme card
-    themeCards.forEach(card => {
-        if (card.dataset.theme === currentTheme) {
-            card.classList.add('active');
-        }
-
-        card.addEventListener('click', function () {
-            themeCards.forEach(c => c.classList.remove('active'));
-            this.classList.add('active');
-
-            const selectedTheme = this.dataset.theme;
-            
-            // Set local storage and apply class to documentElement
-            localStorage.setItem('inv_theme', selectedTheme);
-            applyThemeClass(selectedTheme);
-            
-            showToast(`Theme changed to ${this.querySelector('span').textContent}!`, 'success');
-        });
-    });
-}
-
-function applyThemeClass(theme) {
-    // Remove all previous theme classes
-    document.documentElement.className = '';
-    
-    if (theme !== 'sunset') {
-        document.documentElement.classList.add(`theme-${theme}`);
-    }
-}
 
 // ============================================
 // FIREBASE CONFIGURATION FORM
